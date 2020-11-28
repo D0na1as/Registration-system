@@ -1,18 +1,35 @@
 package com.company.registration_system.Model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+@Entity
 public class Specialist {
 
+    @Id
+    private int id;
     private String name;
+    @Transient
     private String password;
-    private boolean status;
+    private int status;
 
     public Specialist() {
     }
 
-    public Specialist(String name, String password, boolean status) {
+    public Specialist(int id, String name, String password, int status) {
+        this.id = id;
         this.name = name;
         this.password = password;
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -31,11 +48,11 @@ public class Specialist {
         this.password = password;
     }
 
-    public boolean isStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }
