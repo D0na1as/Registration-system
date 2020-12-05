@@ -12,12 +12,12 @@ public class Specialist {
     private String name;
     @Transient
     private String password;
-    private int status;
+    private String status;
 
     public Specialist() {
     }
 
-    public Specialist(int id, String name, String password, int status) {
+    public Specialist(int id, String name, String password, String status) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -48,11 +48,11 @@ public class Specialist {
         this.password = password;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }

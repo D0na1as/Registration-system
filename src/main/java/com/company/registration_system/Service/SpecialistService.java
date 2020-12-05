@@ -5,14 +5,23 @@ import com.company.registration_system.Repository.SpecialistRepoCRUD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SpecialistService {
 
     @Autowired
     SpecialistRepoCRUD specialistRepo;
 
-    public Specialist getSpecialist(String name) {
+    public List<Specialist> getList() {
+        return specialistRepo.getList();
+    }
 
-        return specialistRepo.findByName(name);
+    public Specialist getSpecialist(String name, String password) {
+        return specialistRepo.getSpecialist(name, password);
+    }
+
+    public void status(String serial, String name) {
+        specialistRepo.queryUpStatus(serial, name);
     }
 }
