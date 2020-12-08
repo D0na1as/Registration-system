@@ -19,20 +19,14 @@
         <div  class="row justify-content-md-center">
             <div class="col col-lg-2">
                     <label class="font-weight-bold">Specialist</label>
-                        <select class="select"  th:disabled="${specialists} == null" onchange="location=this.value;" >
-                            <option value="" selected disabled hidden>Choose...</option>
-                            <option th:each="specialist : ${specialists}"th:value="${'/customer/'+specialist.name}"
-                                    th:text="${specialist.name}"
-                                    class="dropdown-item" ></option>
-                        </select>
-                    </form>
+                        <select  th:replace="dropdowns :: specialistList"></select>
                 <div class="invalid-feedback">
                     Please select Specialist.
                 </div>
             </div>
             <div class="col col-lg-2">
                 <label for="date" class="font-weight-bold">Date</label>
-                    <select class="select" id="date" onchange="location=this.value;" th:disabled="${dates} == null" >
+                    <select class="select" id="date" name="date" onchange="location=this.value;" th:disabled="${dates} == null" >
                         <option th:each="date : ${dates}" th:value="${'/customer/' + specialists[0].name + '/' + date}" th:text="${date}"
                                 th:selected="${selDate} == ${date}" class="dropdown-item" ></option>
                     </select>
@@ -42,8 +36,8 @@
             </div>
             <div class="col col-lg-2">
                 <label for="time" class="font-weight-bold">Time</label>
-                <select class="select" id="time" onchange="location = this.value;" th:disabled="${times} == null" >
-                    <option th:each="time : ${times}" th:value="${'/customer/' + specialists[0].name + '/' + date + '/' + time }" th:text="${time.time}"
+                <select class="select" id="time" name="time" onchange="location = this.value;" th:disabled="${times} == null" >
+                    <option th:each="time : ${times}" th:value="${'/customer/' + specialists[0].name + '/' + date + '/' + time.time }" th:text="${time.time}"
                             class="dropdown-item" ></option>
                 </select>
                 <div class="invalid-feedback">

@@ -1,32 +1,41 @@
 package com.company.registration_system.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 @Entity
-public class Customers implements Comparable<Customers>{
+public class Customer implements Comparable<Customer>{
 
     @Id
     private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String serial;
     private int status;
     private String specialist;
     private String time;
     private String date;
+    @Transient
     private String start;
+    @Transient
     private String end;
 
     @Transient
     private DateFormat f = new SimpleDateFormat("yyyy-MM-dd");
 
-    public Customers() {
+    public Customer() {
     }
 
-    public Customers(int id, String serial, int status, String specialist, String time, String date, String start, String end) {
+    public Customer(String serial, int status, String specialist, String time, String date) {
+        this.serial = serial;
+        this.status = status;
+        this.specialist = specialist;
+        this.time = time;
+        this.date = date;
+    }
+
+    public Customer(int id, String serial, int status, String specialist, String time, String date, String start, String end) {
         this.id = id;
         this.serial = serial;
         this.status = status;
@@ -102,7 +111,7 @@ public class Customers implements Comparable<Customers>{
     }
 
     @Override
-    public int compareTo(Customers o) {
+    public int compareTo(Customer o) {
         try {
             return f.parse(this.getDate()).compareTo(f.parse(o.getDate()));
         } catch (ParseException e) {

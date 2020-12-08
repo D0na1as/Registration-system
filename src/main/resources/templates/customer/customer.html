@@ -13,28 +13,33 @@
 </head>
 <body>
 <section class="jumbotron text-center">
-    <div class="container">
-        <h1>Registration System</h1>
-        <h1> Hi Mrs. <a th:text="${specialist.name}"></a></h1>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Time</th>
-                <th scope="col">Serial</th>
-                <th scope="col">Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="customer:${customers}">
-                <th scope="row" th:text="${customer.time}"></th>
-                <td th:text="${customer.serial}"></td>
-                <td  th:switch="${customer.status}">
-
-                    <button th:case="1" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="container">
+            <h1>Registration System</h1>
+            <h1> Hi Mrs. <a th:text="${customer.specialist}"></a></h1>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Serial</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" th:text="${customer.date}"></th>
+                    <td th:text="${customer.time}"></td>
+                    <td  th:text="${customer.serial}"></td>
+                    <td th:switch="${customer.status}">
+                        <a th:case="0" type="button" class="btn btn-danger btn-sm" th:href="@{${customer.serial} + '/cancel'}">Cancel</a>
+                        <a th:case="1"  class="font-weight-bold" style="color:green;">On Going</a>
+                        <p th:case="2" class="font-weight-bold">Meeting Ended</p>
+                        <p th:case="3" class="font-weight-bold" style="color:red;">Meeting Canceled</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 </section>
 
 <!-- Optional JavaScript; choose one of the two! -->

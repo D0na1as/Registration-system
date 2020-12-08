@@ -1,13 +1,15 @@
 package com.company.registration_system.Utilities;
 
+import com.company.registration_system.Model.Customer;
+import com.company.registration_system.Model.Time;
+
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Methods {
+
 
     public static String getDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd");
@@ -33,4 +35,37 @@ public class Methods {
         }
         return daysList;
     }
+
+    public static String genSerial() {
+        Random r = new Random();
+        int result = 100000 + (int)(r.nextFloat() * 900000);
+        return String.valueOf(result);
+    }
+
+    public static List<Time> filterTimes(List<Time> allTimes, List<String> occupTimes) {
+        for (String slot:occupTimes) {
+            for (Time time:allTimes) {
+                if(time.getTime().equals(slot)) {
+                    allTimes.remove(time);
+                    break;
+                }
+            }
+        }
+        return allTimes;
+    }
+    public static List<Customer> sortTime(List<Customer> list) {
+        DateFormat f = new SimpleDateFormat("hh:mm");
+        list.sort(new Comparator<Customer>() {
+            @Override
+            public int compare(Customer o1, Customer o2) {
+                try {
+                    return f.parse(o1.getTime()).compareTo(f.parse(o2.getTime()));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
+        return list;
+    }
+
 }

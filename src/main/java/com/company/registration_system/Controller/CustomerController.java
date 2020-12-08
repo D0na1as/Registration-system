@@ -1,5 +1,6 @@
 package com.company.registration_system.Controller;
 
+import com.company.registration_system.Model.Customer;
 import com.company.registration_system.Model.Specialist;
 import com.company.registration_system.Model.Time;
 import com.company.registration_system.Service.CustomerService;
@@ -9,15 +10,13 @@ import com.company.registration_system.Utilities.Methods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Controller
+@SessionAttributes({ "customer"})
 @RequestMapping("/customer")
 public class CustomerController {
 
@@ -30,66 +29,114 @@ public class CustomerController {
 
         @RequestMapping("/")
         public String login() {
-            return "Customer/front";
+                return "customer/front";
         }
 
         @RequestMapping(value = "/booking", method = RequestMethod.GET)
         public String bookAppointment(Model model) {
-                if (model.getAttribute("specialists")==null) {
-                        List<Specialist> specialists = specialistService.getList();
-                        String name = "name";
-                        //List<String> dates = Methods.getDatesList(20);
-                        //List<Time> time = timeService.getTimes();
 
-                        model.addAttribute("specialists", specialists);
-                        model.addAttribute("name", name);
-                }
+                List<Specialist> specialists = specialistService.getList();
+                Customer customer = new Customer();
+                model.addAttribute("specialists", specialists);
+                model.addAttribute("customer", customer);
 
-                //model.addAttribute("dates", dates);
-                //model.addAttribute("times", time);
-
-                return "customer/booking";
+                return "customer/booking2";
         }
 
-        @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-        public String searchSpecialist(@PathVariable("name") String name, Model model){
-                List<Specialist> specialists = new ArrayList<Specialist>();
-                specialists.add(specialistService.getSpecialist(name, "123"));
+        @RequestMapping(value = "/specialist", method = RequestMethod.GET)
+        public String searchSpecialist(@RequestParam("specialist") String name,
+                                       Model model,
+                                       @ModelAttribute("customer") Customer customer) {
+
                 List<String> dates = Methods.getDatesList(20);
-                model.addAttribute("specialists", specialists);
+                customer.setSpecialist(name);
                 model.addAttribute("dates", dates);
-                model.addAttribute("name", name);
 
+                model.addAttribute("customer", customer);
+
+                return "customer/booking2";
+        }
+
+        @RequestMapping(value = "/date", method = RequestMethod.GET)
+        public String searchDate(@RequestParam("date") String date,
+                                 Model model,
+                                 @ModelAttribute("customer") Customer customer) {
+
+                List<Time> allTimes = timeService.getTimes();
+                List<String> occupTimes = customerService.getTimes(customer.getSpecialist(), date);
+                if (occupTimes.size()>0) {
+                        allTimes = Methods.filterTimes(allTimes, occupTimes);
+                }
+                model.addAttribute("times", allTimes);
+
+                model.addAttribute("customer", customer);
+
+                return "customer/booking2";
+        }
+
+        @RequestMapping(value = "/time", method = RequestMethod.GET)
+        public String searchTime(@RequestParam("time") String time,
+                                 Model model,
+                                 @ModelAttribute("customer") Customer customer) {
+
+                model.addAttribute("customer", customer);
+
+                return "customer/booking2";
+        }
+
+        @RequestMapping("/booking")
+        public String book() {
                 return "customer/booking";
         }
 
-        @RequestMapping(value = "/{specialist.name}/{date}", method = RequestMethod.GET)
-        public String searchDate(@PathVariable("specialist.name") String name, @PathVariable("date") String date,  Model model) {
+        @RequestMapping(value = "/account", method = RequestMethod.GET)
+        public String customerAccount(Model model,
+                                      @ModelAttribute("customer") Customer customer) {
 
-                model.addAttribute("name", name);
-                List<Specialist> specialists = new ArrayList<Specialist>();
-                List<String> dates = new ArrayList<String>();
-                List<Time> times = timeService.getTimes();
-                specialists.add(specialistService.getSpecialist(name, "123"));
-                dates.add(date);
-                model.addAttribute("times", times);
-                model.addAttribute("specialists", specialists);
-                model.addAttribute("dates", dates);
-
-                return "customer/booking";
-        }
-
-        @RequestMapping(value = "/{specialist}/{date}/{time}", method = RequestMethod.GET)
-        public String searchTime(@PathVariable("time") String date, Model model) {
+                String serial = Methods.genSerial();
+                if (customerService.getCustomer(serial)==null) {
+                        customer.setSerial(serial);
+                        customerService.saveCustomer(customer);
+                }
+                model.addAttribute("customer", customer);
 
                 return "customer/customer";
         }
 
+        @RequestMapping(value = "/check/booking", method = RequestMethod.GET)
+        public String checkBooking(@RequestParam("serial") String serial, Model model ) {
 
-        @RequestMapping("/booking")
-        public String book() {
-            return "Customer/booking";
+                Customer customer = customerService.getCustomer(serial);
+                if (customer != null) {
+                     model.addAttribute("customer", customer);
+                     return "customer/customer";
+                } else {
+                        model.addAttribute("serial", serial);
+                     return "customer/check";
+                }
+        }
+        @RequestMapping("/check")
+        public String check() {
+
+             return "customer/check";
+        }
+        @RequestMapping(value = "check/{serial}/cancel", method = RequestMethod.GET)
+        public String specialistCancel(@PathVariable("serial") String serial, Model model) {
+                customerService.cancelMeeting(serial);
+                System.out.println(serial);
+                Customer customer = customerService.getCustomer(serial);
+                System.out.println(customer.getSerial());
+                model.addAttribute("customer", customer);
+
+                return "redirect:/customer/account";
         }
 
+        @RequestMapping(value = "/{customer.serial}/cancel", method = RequestMethod.GET)
+        public String custoemrCancel(@PathVariable("customer.serial") String serial, Model model) {
+                customerService.cancelMeeting(serial);
+                model.addAttribute("customer", customerService.getCustomer(serial));
+
+                return "redirect:/customer/account";
+        }
 
 }

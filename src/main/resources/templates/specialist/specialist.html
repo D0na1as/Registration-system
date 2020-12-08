@@ -16,10 +16,14 @@
     <p class="container">
         <h1>Registration System</h1>
         <h1> Hi Mrs. <a th:text="${specialist.name}"></a></h1>
-        <div class="mb-2" align="left">
-            <select class="select"  onchange="location = this.value;" th:disabled="1 == ${customers[0].status}" >
+        <div  th:switch="${specialist.status}" class="mb-2" align="left">
+            <select th:case="0" class="select"  onchange="location = this.value;"  >
                 <option th:each="date : ${dates}" th:value="@{''+${date}}" th:text="${date}"
-                           class="dropdown-item" th:selected="${date} == ${customers[0].date}" ></option>
+                        class="dropdown-item" th:selected="${date} == ${customers[0].date}" ></option>
+            </select>
+            <select th:case="*" class="select"  onchange="location = this.value;" disabled >
+                <option th:each="date : ${dates}" th:value="@{''+${date}}" th:text="${date}"
+                           class="dropdown-item" th:selected="${date} == ${onGoing}" ></option>
             </select>
         </div>
             <table class="table table-hover mt-2">
@@ -42,11 +46,11 @@
                                     Start / Cancel
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" th:href="@{${customer.date} + '/start'}">Start</a>
-                                    <a class="dropdown-item" th:href="@{${customer.date} + '/cancel'}">Cancel</a>
+                                    <a class="dropdown-item" th:href="@{${customer.serial} + '/start'}">Start</a>
+                                    <a class="dropdown-item" th:href="@{${customer.serial} + '/cancel'}">Cancel</a>
                                 </div>
                             </div>
-                            <a th:case="1" type="button" class="btn btn-danger btn-sm" th:href="@{${customer.date} + '/end'}">End</a>
+                            <a th:case="1" type="button" class="btn btn-danger btn-sm" th:href="@{${customer.serial} + '/end'}">End</a>
                             <p th:case="2" class="font-weight-bold">Meeting ended</p>
                             <p th:case="3" class="font-weight-bold">Meeting canceled</p>
                         </td>

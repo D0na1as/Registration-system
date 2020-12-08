@@ -1,6 +1,6 @@
 package com.company.registration_system.Service;
 
-import com.company.registration_system.Model.Customers;
+import com.company.registration_system.Model.Customer;
 import com.company.registration_system.Repository.CustomerRepoCRUD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ public class CustomerService {
     @Autowired
     CustomerRepoCRUD customerRepo;
 
-    public Customers getCustomer(String serial) {
+    public Customer getCustomer(String serial) {
         return customerRepo.findBySerial(serial);
     }
 
@@ -22,14 +22,15 @@ public class CustomerService {
     }
 
     //Get Specialist customers
-    public List<Customers> getCustomers(String name) {
+    public List<Customer> getCustomers(String name) {
         return customerRepo.queryGetCustomers(name);
     }
-    public List<Customers> getCustomersByDate(String name, String date) {
+    public List<Customer> getCustomersByDate(String name, String date) {
         return customerRepo.queryGetCustomersByDate(name, date);
     }
 
-    public void registerCustomer(Customers customer) {
+    //Save Customer
+    public void registerCustomer(Customer customer) {
         customerRepo.save(customer);
     }
 
@@ -45,5 +46,11 @@ public class CustomerService {
         customerRepo.queryUpCancel(serial);
     }
 
+    public void saveCustomer(Customer customer){
+        customerRepo.save(customer);
+    }
 
+    public List<String> getTimes(String specialist, String date){
+        return customerRepo.queryGetTimes(specialist, date);
+    }
 }

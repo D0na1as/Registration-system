@@ -1,5 +1,6 @@
 package com.company.registration_system.Controller;
 
+import com.company.registration_system.Model.Customer;
 import com.company.registration_system.Model.Specialist;
 import com.company.registration_system.Service.CustomerService;
 import com.company.registration_system.Service.SpecialistService;
@@ -35,12 +36,22 @@ public class SpecialistController {
     public String loginSpecialist(@RequestParam String name, @RequestParam String password, Model model) {
 
         Specialist specialist = specialistService.getSpecialist(name, password);
+        List<String> dates = customerService.getDates(name);
         if (specialist != null) {
-            List<String> dates = customerService.getDates(name);
-            System.out.println(specialist.getStatus());
+            if (!specialist.getStatus().equals("0")){
+                String onGoing = customerService.getCustomer(specialist.getStatus()).getDate();
+                List<Customer> customers = customerService.getCustomersByDate(name, onGoing);
+                customers = Methods.sortTime(customers);
+                model.addAttribute("onGoing", onGoing);
+                model.addAttribute("customers", customers);
+            } else {
+                List<Customer> customers = customerService.getCustomersByDate(name, dates.get(0));
+                customers = Methods.sortTime(customers);
+                model.addAttribute("customers", customers);
+            }
             model.addAttribute("specialist", specialist);
             model.addAttribute("dates", dates);
-            model.addAttribute("customers", customerService.getCustomersByDate(name, dates.get(0)));
+
             return "specialist/specialist";
         } else {
             return "specialist/login";
@@ -53,21 +64,26 @@ public class SpecialistController {
         String password = "123";
         Specialist specialist = specialistService.getSpecialist(name, password);
         List<String> dates = customerService.getDates(name);
+        List<Customer> customers = customerService.getCustomersByDate(name, date);
+        customers = Methods.sortTime(customers);
         model.addAttribute("specialist", specialist);
         model.addAttribute("dates", dates);
-        model.addAttribute("customers", customerService.getCustomersByDate(name, date));
+        model.addAttribute("customers", customers);
 
         return "specialist/specialist";
     }
 
-    @RequestMapping(value = "/{date}/start", method = RequestMethod.GET)
-    public String specialistStart(@PathVariable("date") String date, Model model) {
+    @RequestMapping(value = "/{serial}/start", method = RequestMethod.GET)
+    public String specialistStart(@PathVariable("serial") String serial, Model model) {
         String name = "Hansas";
         String password = "123";
+
+        customerService.startMeeting(Methods.getTime(), serial);
+        specialistService.status(serial, name);
+        String date = customerService.getCustomer(serial).getDate();
         Specialist specialist = specialistService.getSpecialist(name, password);
         List<String> dates = customerService.getDates(name);
-        customerService.startMeeting(Methods.getTime(), customerService.getCustomersByDate(name, date).get(0).getSerial());
-        specialistService.status(customerService.getCustomersByDate(name, date).get(0).getSerial(), name);
+
         model.addAttribute("specialist", specialist);
         model.addAttribute("dates", dates);
         model.addAttribute("customers", customerService.getCustomersByDate(name, date));
@@ -75,14 +91,17 @@ public class SpecialistController {
         return "redirect:/specialist/" + date;
     }
 
-    @RequestMapping(value = "/{date}/end", method = RequestMethod.GET)
-        public String specialistEnd(@PathVariable("date") String date, Model model) {
+    @RequestMapping(value = "/{serial}/end", method = RequestMethod.GET)
+        public String specialistEnd(@PathVariable("serial") String serial, Model model) {
             String name = "Hansas";
             String password = "123";
+
+            customerService.endMeeting(Methods.getTime(), serial);
+            String date = customerService.getCustomer(serial).getDate();
             Specialist specialist = specialistService.getSpecialist(name, password);
             List<String> dates = customerService.getDates(name);
-            customerService.endMeeting(Methods.getTime(), customerService.getCustomersByDate(name, date).get(0).getSerial());
             specialistService.status("0", name);
+
             model.addAttribute("specialist", specialist);
             model.addAttribute("dates", dates);
             model.addAttribute("customers", customerService.getCustomersByDate(name, date));
@@ -90,13 +109,16 @@ public class SpecialistController {
             return "redirect:/specialist/" + date;
         }
 
-    @RequestMapping(value = "/{date}/cancel", method = RequestMethod.GET)
-        public String specialistCancel(@PathVariable("date") String date, Model model) {
+    @RequestMapping(value = "/{serial}/cancel", method = RequestMethod.GET)
+        public String specialistCancel(@PathVariable("serial") String serial, Model model) {
             String name = "Hansas";
             String password = "123";
+
+            String date = customerService.getCustomer(serial).getDate();
             Specialist specialist = specialistService.getSpecialist(name, password);
             List<String> dates = customerService.getDates(name);
-            customerService.cancelMeeting(customerService.getCustomersByDate(name, date).get(0).getSerial());
+            customerService.cancelMeeting(serial);
+
             model.addAttribute("specialist", specialist);
             model.addAttribute("dates", dates);
             model.addAttribute("customers", customerService.getCustomersByDate(name, date));
