@@ -3,6 +3,7 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -16,10 +17,18 @@
     <div class="container">
         <h1>Registration System</h1>
         <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-        <p>
-            <a  th:href="@{booking}"  class="btn btn-primary">Book Appointment</a>
-            <a th:href="@{check}" class="btn btn-primary">Check Registration</a>
-        </p>
+        <table class="table align-top" style="width: 50%">
+            <thead>
+            <tr>
+                <th class="col-sm align-baseline" style="width: 50%">
+                    <a th:href="@{booking/}" class="btn btn-primary">Book Appointment</a>
+                </th>
+                <th class="col-sm align-baseline" style="width: 50%">
+                    <a th:href="@{check/}" class="btn btn-primary">Check Registration</a>
+                </th>
+            </tr>
+            </thead>
+        </table>
     </div>
 </section>
 

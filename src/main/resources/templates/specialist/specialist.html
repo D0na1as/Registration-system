@@ -8,26 +8,30 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/datepicker.css"/>
 
-    <title>Registration System</title>
+ <title>Registration System</title>
 </head>
 <body>
 <section class="jumbotron text-center">
     <p class="container">
         <h1>Registration System</h1>
         <h1> Hi Mrs. <a th:text="${specialist.name}"></a></h1>
-        <div  th:switch="${specialist.status}" class="mb-2" align="left">
+        <div th:switch="${specialist.status}" class="mb-2" align="left">
             <select th:case="0" class="select"  onchange="location = this.value;"  >
                 <option th:each="date : ${dates}" th:value="@{''+${date}}" th:text="${date}"
-                        class="dropdown-item" th:selected="${date} == ${customers[0].date}" ></option>
+                        class="dropdown-item" th:selected="${customers[0].date} ? ${date} == ${customers[0].date}" ></option>
             </select>
             <select th:case="*" class="select"  onchange="location = this.value;" disabled >
                 <option th:each="date : ${dates}" th:value="@{''+${date}}" th:text="${date}"
                            class="dropdown-item" th:selected="${date} == ${onGoing}" ></option>
             </select>
         </div>
-            <table class="table table-hover mt-2">
-                <thead>
+
+    <input type="text" class="span2" th:value="${customers[0].date}" id="dp1" >
+
+    <table class="table table-hover">
+    <thead>
                 <tr >
                     <th scope="col-sm" style="width: 33.33%">Time</th>
                     <th scope="col-sm" style="width: 33.33%">Serial</th>
@@ -36,39 +40,60 @@
                 </thead>
                 <tbody>
                     <tr th:each="customer:${customers}">
-                        <th scope="row" th:text="${customer.time}"></th>
-                        <td th:text="${customer.serial}"></td>
-                        <td th:switch="${customer.status}">
-                            <div th:case="0" class="dropdown show">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle"
-                                        th:disabled="${specialist.status != '0'}"  type="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Start / Cancel
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" th:href="@{${customer.serial} + '/start'}">Start</a>
-                                    <a class="dropdown-item" th:href="@{${customer.serial} + '/cancel'}">Cancel</a>
+                        <th:block th:if="${customer.status!=3}">
+                            <th scope="row" th:text="${customer.time}"></th>
+                            <td th:text="${customer.serial}"></td>
+                            <td th:switch="${customer.status}">
+                                <div th:case="0" class="dropdown show">
+                                    <button class="btn btn-secondary btn-sm dropdown-toggle"
+                                            th:disabled="${specialist.status != '0'}"  type="button"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Start / Cancel
+                                    </button>
+                                    <div class="dropdown-menu text-left" aria-labelledby="dropdownMenuLink">
+                                       <a class="dropdown-item" th:href="@{${customer.serial} + '/start'}">Start</a>
+                                        <form th:action="${'/specialist/cancel'}"  method="POST">
+                                            <input type="hidden" th:value="${customer.serial}" name="serial"/>
+                                            <button class="dropdown-item" type=submit style="outline: none;}">Cancel</button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                            <a th:case="1" type="button" class="btn btn-danger btn-sm" th:href="@{${customer.serial} + '/end'}">End</a>
-                            <p th:case="2" class="font-weight-bold">Meeting ended</p>
-                            <p th:case="3" class="font-weight-bold">Meeting canceled</p>
-                        </td>
+                                <a th:case="1" type="button" class="btn btn-danger btn-sm" th:href="@{${customer.serial} + '/end'}">End</a>
+                                <p th:case="2" class="font-weight-bold">Meeting ended</p>
+                                <!-- <p th:case="3" class="font-weight-bold">Meeting canceled</p> -->
+                            </td>
+                        </th:block>
                     </tr>
                 </tbody>
             </table>
     </div>
 </section>
+
 <!-- Optional JavaScript; choose one of the two! -->
 
-<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper)-->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
 
 <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
 -->
+<script src="../js/bootstrap-datepicker.js"></script>
+<script>
+
+		$(function(){
+			window.prettyPrint && prettyPrint();
+			$('#dp1').datepicker({
+				format: 'yyyy-mm-dd',
+                todayBtn: 'linked',
+                beforeShow: function(){
+                    $(".datepicker").css('font-size', 12)
+                }
+			});
+		});
+	</script>
 </body>
 </html>

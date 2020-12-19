@@ -24,4 +24,6 @@ public class SpecialistService {
     public void status(String serial, String name) {
         specialistRepo.queryUpStatus(serial, name);
     }
+
+
 }

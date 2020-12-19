@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -32,29 +33,44 @@ public class SpecialistController {
         return "specialist/login";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginSpecialist(@RequestParam String name, @RequestParam String password, Model model) {
 
-        Specialist specialist = specialistService.getSpecialist(name, password);
-        List<String> dates = customerService.getDates(name);
-        if (specialist != null) {
-            if (!specialist.getStatus().equals("0")){
-                String onGoing = customerService.getCustomer(specialist.getStatus()).getDate();
-                List<Customer> customers = customerService.getCustomersByDate(name, onGoing);
-                customers = Methods.sortTime(customers);
-                model.addAttribute("onGoing", onGoing);
-                model.addAttribute("customers", customers);
-            } else {
-                List<Customer> customers = customerService.getCustomersByDate(name, dates.get(0));
-                customers = Methods.sortTime(customers);
-                model.addAttribute("customers", customers);
-            }
-            model.addAttribute("specialist", specialist);
-            model.addAttribute("dates", dates);
+        String screen = "screen";
 
-            return "specialist/specialist";
+        if (name.equals(screen)) {
+
+            List<Specialist> specialists = specialistService.getList();
+            HashMap<String, String> currentCustomers = customerService.getCurrentCustomers(specialists);
+            HashMap<String, List<Customer>> nextCustomers = customerService.getUpcomingCustomers(specialists);
+            model.addAttribute("specialists", specialists);
+            model.addAttribute("currentCustomer", currentCustomers);
+            model.addAttribute("nextCustomers", nextCustomers);
+            return "screen/screen";
         } else {
-            return "specialist/login";
+
+            Specialist specialist = specialistService.getSpecialist(name, password);
+            List<String> dates = customerService.getDates(name);
+
+            if (specialist != null) {
+                if (!specialist.getStatus().equals("0")) {
+                    String onGoing = customerService.getCustomer(specialist.getStatus()).getDate();
+                    List<Customer> customers = customerService.getCustomersByDate(name, onGoing);
+                    customers = Methods.sortTime(customers);
+                    model.addAttribute("onGoing", onGoing);
+                    model.addAttribute("customers", customers);
+                } else {
+                    List<Customer> customers = customerService.getCustomersByDate(name, Methods.getDate());
+                    customers = Methods.sortTime(customers);
+                    model.addAttribute("customers", customers);
+                }
+                model.addAttribute("specialist", specialist);
+                model.addAttribute("dates", dates);
+
+                return "specialist/specialist";
+            } else {
+                return "specialist/login";
+            }
         }
     }
 
@@ -109,8 +125,8 @@ public class SpecialistController {
             return "redirect:/specialist/" + date;
         }
 
-    @RequestMapping(value = "/{serial}/cancel", method = RequestMethod.GET)
-        public String specialistCancel(@PathVariable("serial") String serial, Model model) {
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    public String specialistCancel(@RequestParam("serial") String serial, Model model) {
             String name = "Hansas";
             String password = "123";
 

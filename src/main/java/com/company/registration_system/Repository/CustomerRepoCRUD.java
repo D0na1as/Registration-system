@@ -19,7 +19,8 @@ public interface CustomerRepoCRUD extends CrudRepository<Customer, Integer> {
     String queryGetCustomers = "SELECT * FROM " + table + " WHERE specialist = ? AND date>=CAST( now() AS Date );";
     String queryGetCustomersByDate = "SELECT * FROM " + table + " WHERE specialist = ? AND date=? ;";
     String queryGetDates = "SELECT DISTINCT date FROM " + table + " WHERE specialist=? ORDER BY date;";
-    String queryGetTimes = "SELECT time FROM " + table + " WHERE specialist=? and date=?;";
+    String queryGetTimes = "SELECT time FROM " + table + " WHERE specialist=? and date=?";
+    String queryGetID = "SELECT id FROM " + table + " WHERE serial=?";
 
     //Update queries
     String queryUpStart = "UPDATE " + table + " SET start = ?, status = 1 WHERE serial=?";
@@ -44,6 +45,9 @@ public interface CustomerRepoCRUD extends CrudRepository<Customer, Integer> {
 
     @Query(nativeQuery = true, value = queryGetTimes)
     List<String> queryGetTimes(String specialist, String date);
+
+    @Query(nativeQuery = true, value = queryGetID)
+        String queryGetID(String serial);
 
     //Update queries
     @Transactional

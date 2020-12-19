@@ -12,7 +12,7 @@ public class Methods {
 
 
     public static String getDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date time = new Date();
         return dateFormat.format(time);
     }

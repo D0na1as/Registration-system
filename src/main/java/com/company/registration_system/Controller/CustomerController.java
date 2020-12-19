@@ -62,10 +62,16 @@ public class CustomerController {
                                  Model model,
                                  @ModelAttribute("customer") Customer customer) {
 
-                List<Time> allTimes = timeService.getTimes();
+                List<Time> allTimes;
+
+                if (date.equals(Methods.getDate())) {
+                        allTimes = timeService.getTimesOfToday(Methods.getTime());
+                } else {
+                        allTimes = timeService.getTimes();
+                }
                 List<String> occupTimes = customerService.getTimes(customer.getSpecialist(), date);
                 if (occupTimes.size()>0) {
-                        allTimes = Methods.filterTimes(allTimes, occupTimes);
+                        Methods.filterTimes(allTimes, occupTimes);
                 }
                 model.addAttribute("times", allTimes);
 
@@ -89,7 +95,7 @@ public class CustomerController {
                 return "customer/booking";
         }
 
-        @RequestMapping(value = "/account", method = RequestMethod.GET)
+        @RequestMapping(value = "/account", method = RequestMethod.POST)
         public String customerAccount(Model model,
                                       @ModelAttribute("customer") Customer customer) {
 
@@ -97,6 +103,7 @@ public class CustomerController {
                 if (customerService.getCustomer(serial)==null) {
                         customer.setSerial(serial);
                         customerService.saveCustomer(customer);
+                        customer = customerService.getCustomer(serial);
                 }
                 model.addAttribute("customer", customer);
 
@@ -120,23 +127,23 @@ public class CustomerController {
 
              return "customer/check";
         }
-        @RequestMapping(value = "check/{serial}/cancel", method = RequestMethod.GET)
-        public String specialistCancel(@PathVariable("serial") String serial, Model model) {
+        @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+        public String specialistCancel(@RequestParam("serial") String serial, Model model) {
                 customerService.cancelMeeting(serial);
                 System.out.println(serial);
                 Customer customer = customerService.getCustomer(serial);
                 System.out.println(customer.getSerial());
                 model.addAttribute("customer", customer);
 
-                return "redirect:/customer/account";
+                return "/customer/customer";
         }
 
-        @RequestMapping(value = "/{customer.serial}/cancel", method = RequestMethod.GET)
-        public String custoemrCancel(@PathVariable("customer.serial") String serial, Model model) {
-                customerService.cancelMeeting(serial);
-                model.addAttribute("customer", customerService.getCustomer(serial));
-
-                return "redirect:/customer/account";
-        }
+//        @RequestMapping(value = "/{customer.serial}/cancel", method = RequestMethod.GET)
+//        public String customerCancel(@PathVariable("customer.serial") String serial, Model model) {
+//                customerService.cancelMeeting(serial);
+//                model.addAttribute("customer", customerService.getCustomer(serial));
+//
+//                return "redirect:/customer/account";
+//        }
 
 }

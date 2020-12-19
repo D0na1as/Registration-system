@@ -16,4 +16,8 @@ public class TimeService {
     public List<Time> getTimes() {
         return timeRepo.getTimes();
     }
+    public List<Time> getTimesOfToday(String currentTime) {
+        return timeRepo.getTimesOfToday(currentTime);
+    }
+
 }

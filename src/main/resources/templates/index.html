@@ -16,9 +16,18 @@
     <div class="container">
         <h1>Registration System</h1>
         <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-        <p>
-            <a th:href="@{specialist/}" class="btn btn-primary">Specialist</a>
-            <a th:href="@{customer/}" class="btn btn-primary">Customer</a>
+        <table class="table align-top" style="width: 50%">
+            <thead>
+            <tr>
+                <th class="col-sm align-baseline" style="width: 50%">
+                    <a th:href="@{specialist/}" class="btn btn-primary">Specialist</a>
+                </th>
+                <th class="col-sm align-baseline" style="width: 50%">
+                    <a th:href="@{customer/}" class="btn btn-primary">Customer</a>
+                </th>
+            </tr>
+            </thead>
+        </table>
         </p>
     </div>
 </section>

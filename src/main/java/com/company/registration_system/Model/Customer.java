@@ -27,6 +27,11 @@ public class Customer implements Comparable<Customer>{
     public Customer() {
     }
 
+    public Customer(int id) {
+        this.id = id;
+    }
+
+
     public Customer(String serial, int status, String specialist, String time, String date) {
         this.serial = serial;
         this.status = status;

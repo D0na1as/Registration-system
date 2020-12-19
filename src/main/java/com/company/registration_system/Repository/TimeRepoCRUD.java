@@ -11,8 +11,13 @@ import java.util.List;
 public interface TimeRepoCRUD extends CrudRepository<Time, Integer> {
 
     String table = "times";
+    String queryGetTimesToday = "SELECT * FROM " + table + " where time>=?";
     String queryGetTimes = "SELECT * FROM " + table;
+
+    @Query(nativeQuery = true, value = queryGetTimesToday)
+    List<Time> getTimesOfToday(String currentTime);
 
     @Query(nativeQuery = true, value = queryGetTimes)
     List<Time> getTimes();
+
 }

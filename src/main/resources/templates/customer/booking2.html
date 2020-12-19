@@ -16,8 +16,11 @@
     <div class="container">
         <h1>Registration System</h1>
         <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
-            <div  class="row justify-content-around">
-                <div th:if="${customer.specialist == null && customer.date == null && customer.time == null}" class="col-4">
+            <!--<div  class="row justify-content-around"> -->
+        <table class="table align-top">
+            <thead>
+            <tr>
+                <th class="col-sm align-baseline" style="width: 33.33%" th:if="${customer.specialist == null && customer.date == null && customer.time == null}">
                     <form th:action="${'/customer/specialist'}" method="GET">
                         <select th:object="${customer}"  th:field="*{specialist}" onchange="this.form.submit()" class="form-control"
                                 name="specialist" >
@@ -27,19 +30,19 @@
                                     class="dropdown-item" ></option>
                         </select>
                     </form>
-                </div>
-                <div th:if="${customer.specialist != null && customer.date == null && customer.time == null}"  class="col-4">
+                </th>
+                <th class="col-sm align-baseline" style="width: 33.33%" th:if="${customer.specialist != null && customer.date == null && customer.time == null}">
                     <form th:action="${'/customer/date'}" method="GET">
                     <select th:object="${customer}"  th:field="*{date}" onchange="this.form.submit()" class="form-control"
-                            name="date" >
+                            name="date">
                         <option value="" selected >Choose...</option>
                         <option th:each="date : ${dates}" th:value="${date}"
                                 th:text="${date}"
                                 class="dropdown-item" ></option>
                     </select>
                     </form>
-                </div>
-                <div th:if="${customer.specialist != null && customer.date != null && customer.time == null}" class="col-4">
+                </th>
+                <th class="col-sm align-baseline" style="width: 33.33%" th:if="${customer.specialist != null && customer.date != null && customer.time == null}">
                     <form th:action="${'/customer/time'}" method="GET">
                         <select th:object="${customer}"  th:field="*{time}" onchange="this.form.submit()" class="form-control"
                                 name="time" >
@@ -49,31 +52,40 @@
                                     class="dropdown-item" ></option>
                         </select>
                     </form>
-                </div>
-                <div th:if="${customer.specialist != null && customer.date != null && customer.time != null}" class="col-4">
-                    <p>
-                        <a th:href="@{account}"  class="btn btn-primary">Book</a>
-                        <a th:href="@{booking}"  class="btn btn-primary">Reset</a>
-                    </p>
-                </div>
-
-                    <div class="col-4 font-weight-bold">
-                        <H3>Registration:</H3>
-                        <div th:if="${customer.specialist!=null}" class="row justify-content-center">
-                            <p>Specialist:&nbsp;</p>
-                            <p class="font-weight-normal" th:text="${customer.specialist}"></p>
+                </th>
+                <th class="col-sm align-baseline" style="width: 33.33%" th:if="${customer.specialist != null && customer.date != null && customer.time != null}">
+                    <form th:action="${'/customer/account'}" method="POST">
+                        <div th:if="${customer.specialist != null && customer.date != null && customer.time != null}" class="col-3 inline">
+                            <span>
+                                <input type="hidden" th:value="${customer}" class="btn btn-link" />
+                                <button type=submit class="btn btn-primary">Book</button>
+                            </span>
                         </div>
-                        <div th:if="${customer.date!=null}" class="row justify-content-center">
-                            <p>Date:&nbsp;</p>
-                            <p class="font-weight-normal" th:text="${customer.date}"></p>
-                        </div>
-                        <div th:if="${customer.time!=null}"  class="row justify-content-center">
-                            <p>Time:&nbsp;</p>
-                            <p class="font-weight-normal" th:text="${customer.time}"></p>
-                        </div>
+                    </form>
+                </th>
+                <th class="col-sm align-baseline" style="width: 33.33%">
+                    <span>
+                        <a th:href="@{/customer/booking}"  class="btn btn-primary">Reset</a>
+                    </span>
+                </th>
+                <th class="col-sm align-baseline" style="width: 33.33%">
+                    <H4>Your Choice:</H4>
+                    <div th:if="${customer.specialist!=null}" class="row justify-content-center">
+                        <p>Specialist:&nbsp;</p>
+                        <p class="font-weight-normal" th:text="${customer.specialist}"></p>
                     </div>
-                </form>
-            </div>
+                    <div th:if="${customer.date!=null}" class="row justify-content-center">
+                        <p>Date:&nbsp;</p>
+                        <p class="font-weight-normal" th:text="${customer.date}"></p>
+                    </div>
+                    <div th:if="${customer.time!=null}"  class="row justify-content-center">
+                        <p>Time:&nbsp;</p>
+                        <p class="font-weight-normal" th:text="${customer.time}"></p>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
     </div>
 </section>
 
