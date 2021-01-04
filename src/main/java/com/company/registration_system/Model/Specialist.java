@@ -13,15 +13,21 @@ public class Specialist {
     @Transient
     private String password;
     private String status;
+    @Transient
+    private String role;
+    @Transient
+    private boolean enabled;
 
     public Specialist() {
     }
 
-    public Specialist(int id, String name, String password, String status) {
+    public Specialist(int id, String name, String password, String status, String role, boolean enabled) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.status = status;
+        this.role = role;
+        this.enabled = enabled;
     }
 
     public int getId() {
@@ -54,5 +60,21 @@ public class Specialist {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

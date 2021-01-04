@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController implements ErrorController {
     private final static String PATH = "/error";
+
     @Override
     @RequestMapping(PATH)
     @ResponseBody

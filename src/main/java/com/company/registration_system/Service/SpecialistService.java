@@ -17,13 +17,11 @@ public class SpecialistService {
         return specialistRepo.getList();
     }
 
-    public Specialist getSpecialist(String name, String password) {
-        return specialistRepo.getSpecialist(name, password);
+    public Specialist getSpecialist(String name) {
+        return specialistRepo.getSpecialist(name);
     }
 
     public void status(String serial, String name) {
         specialistRepo.queryUpStatus(serial, name);
     }
-
-
 }

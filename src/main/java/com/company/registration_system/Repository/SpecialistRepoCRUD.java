@@ -13,8 +13,8 @@ import java.util.List;
 public interface SpecialistRepoCRUD extends CrudRepository<Specialist, Integer> {
 
     String table = "employees";
-    String queryGetNames = "SELECT id, name, status FROM " + table;
-    String queryGetAccount = "SELECT id, name, status FROM " + table + " WHERE name=? and password=?";
+    String queryGetNames = "SELECT id, name, status FROM " + table + " where role='user';";
+    String queryGetAccount = "SELECT id, name, status FROM " + table + " WHERE name=?";
     //Update queries
     String queryUpStart = "UPDATE " + table + " SET status = ? WHERE name =? ";
 
@@ -22,15 +22,12 @@ public interface SpecialistRepoCRUD extends CrudRepository<Specialist, Integer> 
         List<Specialist> getList();
 
     @Query(nativeQuery = true, value = queryGetAccount)
-        Specialist getSpecialist(String name, String password);
+        Specialist getSpecialist(String name);
 
     //Update
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = queryUpStart)
     void queryUpStatus(String status, String name);
-
-
-
 
 }
