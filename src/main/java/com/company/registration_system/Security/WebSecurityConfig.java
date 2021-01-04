@@ -57,12 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        saveFile("pass", passwordEncoder().encode("slaptazodis"));
-        saveFile("pass2", passwordEncoder().encode("skrynas"));
-//        auth.inMemoryAuthentication()
-//                .withUser("Hansas")
-//                .password(passwordEncoder().encode("123"))
-//                .roles("USER");
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("select name, password, enabled from employees where name=?")
                 .authoritiesByUsernameQuery("select name, role from employees where name=?");
